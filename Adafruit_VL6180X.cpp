@@ -45,8 +45,8 @@ Adafruit_VL6180X::Adafruit_VL6180X(void) {}
     @returns True if chip found and initialized, False otherwise
 */
 /**************************************************************************/
-boolean Adafruit_VL6180X::begin(TwoWire *theWire) {
-  _i2caddr = VL6180X_DEFAULT_I2C_ADDR;
+boolean Adafruit_VL6180X::begin(TwoWire *theWire, uint8_t i2caddr) {
+  _i2caddr = i2caddr;
   if (!theWire) {
     _i2c = &Wire;
   } else {
@@ -65,6 +65,27 @@ boolean Adafruit_VL6180X::begin(TwoWire *theWire) {
   write8(VL6180X_REG_SYSTEM_FRESH_OUT_OF_RESET, 0x00);
 
   return true;
+}
+
+/**************************************************************************/
+/*! 
+    @brief  Initializes I2C interface, checks that VL6180X is found and resets chip.
+    @param  newAddr the value of new I2C adress to be used by VL6180X device
+*/
+/**************************************************************************/
+void Adafruit_VL6180X::setAddress(uint8_t newAddr) {
+  write8(0x212, newAddr&0x7F);
+  _i2caddr = newAddr;
+}
+
+/**************************************************************************/
+/*! 
+    @brief gets current sensor address
+    @returns current sensor address
+*/
+/**************************************************************************/
+uint8_t Adafruit_VL6180X::getAddress() {
+  return _i2caddr;
 }
 
 /**************************************************************************/
